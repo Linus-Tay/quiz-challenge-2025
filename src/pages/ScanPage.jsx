@@ -1,41 +1,86 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
 
-const booths = ['booth1', 'booth2', 'booth3', 'booth4', 'booth5', 'booth6', 'booth7', 'booth8', 'booth9', 'booth10'];
-
 const ScanPage = () => {
+  const qrRef = useRef(null);
+  const html5QrCodeRef = useRef(null);
+  const [scanning, setScanning] = useState(false);
   const navigate = useNavigate();
 
-  const unlockNextQuestion = () => {
-    let unlocked = JSON.parse(localStorage.getItem('unlockedQuestions') || '[]');
+  const handleScanSuccess = (decodedText) => {
+    if (!decodedText) return;
 
-    if (unlocked.length >= 10) return alert('All questions unlocked!');
+    const unlocked = JSON.parse(localStorage.getItem('unlockedQuestions') || '[]');
 
-    const nextBooth = booths[unlocked.length];
-    unlocked.push(nextBooth);
-    localStorage.setItem('unlockedQuestions', JSON.stringify(unlocked));
+    if (unlocked.includes(decodedText)) {
+      alert(`📌 ${decodedText} already scanned.`);
+    } else if (unlocked.length >= 10) {
+      alert('✅ All questions already unlocked.');
+    } else {
+      unlocked.push(decodedText);
+      localStorage.setItem('unlockedQuestions', JSON.stringify(unlocked));
+      alert(`✅ ${decodedText} unlocked!`);
+    }
 
-    alert(`Scanned ${nextBooth}! Unlocked Question ${unlocked.length}`);
+    // Stop scanning after success
+    html5QrCodeRef.current?.stop().then(() => {
+      setScanning(false);
+      navigate('/progress');
+    });
   };
 
-  return (
-    <div className="min-h-screen bg-white p-6 flex flex-col justify-between">
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-center">Scan QR Code</h2>
+const startScanner = () => {
+  setScanning(true);
 
-        <button
-          className="bg-blue-600 text-white py-4 rounded-lg w-full mb-4"
-          onClick={unlockNextQuestion}
-        >
-          📷 Simulate QR Scan
-        </button>
+  setTimeout(() => {
+    const qrRegionId = "qr-reader";
+    html5QrCodeRef.current = new Html5Qrcode(qrRegionId);
+
+    html5QrCodeRef.current
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        handleScanSuccess,
+        (err) => console.warn("QR scan error", err)
+      )
+      .catch((err) => {
+        console.error("Camera start error", err);
+        alert("Camera access failed.");
+        setScanning(false);
+      });
+  }, 300); // wait for DOM to render <div id="qr-reader">
+};
+
+
+  useEffect(() => {
+    // Cleanup scanner on unmount
+    return () => {
+      html5QrCodeRef.current?.stop().catch(() => {});
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen p-6 bg-white flex flex-col justify-between">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-4">Scan QR to Unlock Questions</h2>
+
+        {!scanning ? (
+          <button onClick={startScanner} className="btn-primary w-full">
+            📷 Start Scanning
+          </button>
+        ) : (
+          <div className="w-full">
+            {scanning && (
+  <div id="qr-reader" className="w-full max-w-sm mx-auto rounded-md overflow-hidden shadow-md border" />
+)}
+            <p className="mt-3 text-sm text-gray-600">Align the QR code within the box.</p>
+          </div>
+        )}
       </div>
 
-      <button
-        className="bg-gray-700 text-white py-3 rounded-lg w-full"
-        onClick={() => navigate('/progress')}
-      >
-        View Progress
+      <button onClick={() => navigate('/progress')} className="btn-secondary mt-6">
+        📊 View Progress
       </button>
     </div>
   );

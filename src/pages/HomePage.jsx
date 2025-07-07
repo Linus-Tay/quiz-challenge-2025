@@ -5,29 +5,14 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50 p-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">Quiz Challenge 2025</h1>
+    <div className="min-h-screen bg-blue-50 flex flex-col items-center justify-center p-6 text-center">
+      <h1 className="text-4xl font-bold mb-6 text-blue-900">Quiz Challenge 2025</h1>
 
-      <button
-        className="bg-blue-600 text-white px-6 py-3 rounded-lg mb-4 w-full max-w-xs"
-        onClick={() => navigate('/how-to-play')}
-      >
-        How to Play
-      </button>
-
-      <button
-        className="bg-green-600 text-white px-6 py-3 rounded-lg mb-4 w-full max-w-xs"
-        onClick={() => navigate('/scan')}
-      >
-        Start Scanning
-      </button>
-
-      <button
-        className="bg-gray-700 text-white px-6 py-3 rounded-lg w-full max-w-xs"
-        onClick={() => navigate('/progress')}
-      >
-        View Progress
-      </button>
+      <div className="space-y-4 w-full max-w-xs">
+        <button onClick={() => navigate('/how-to-play')} className="btn-primary">📖 How to Play</button>
+        <button onClick={() => navigate('/scan')} className="btn-success">📷 Scan QR Code</button>
+        <button onClick={() => navigate('/progress')} className="btn-secondary">📊 View Progress</button>
+      </div>
     </div>
   );
 };

@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-primary {
+  background-color: #2563eb; /* Tailwind blue-600 */
+  color: white;
+  padding: 0.75rem 1rem;      /* py-3 */
+  border-radius: 0.5rem;      /* rounded-lg */
+  font-weight: 600;           /* font-semibold */
+  width: 100%;
+}
+
+.btn-success {
+  background-color: #16a34a; /* Tailwind green-600 */
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  width: 100%;
+}
+
+.btn-secondary {
+  background-color: #374151; /* Tailwind gray-700 */
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  width: 100%;
+}
