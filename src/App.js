@@ -6,18 +6,69 @@ import ProgressPage from './pages/ProgressPage';
 import CongratsPage from './pages/CongratsPage';
 import PrizePage from './pages/PrizePage';
 import QRDisplay from './pages/QRDisplay';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {/* Public Pages */}
+        <Route path="/" element={<SignIn />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/how-to-play" element={<HowToPlay />} />
-        <Route path="/scan" element={<ScanPage />} />
-        <Route path="/progress" element={<ProgressPage />} />
-        <Route path="/congrats" element={<CongratsPage />} />
-        <Route path="/prize" element={<PrizePage />} />
-        <Route path="/qr" element={<QRDisplay />} />
+
+        {/* Protected Pages */}
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <HomePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/scan"
+          element={
+            <PrivateRoute>
+              <ScanPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <PrivateRoute>
+              <ProgressPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/congrats"
+          element={
+            <PrivateRoute>
+              <CongratsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/prize"
+          element={
+            <PrivateRoute>
+              <PrizePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/qr"
+          element={
+            <PrivateRoute>
+              <QRDisplay />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );

@@ -3,7 +3,6 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
 
 const ScanPage = () => {
-  const qrRef = useRef(null);
   const html5QrCodeRef = useRef(null);
   const [scanning, setScanning] = useState(false);
   const navigate = useNavigate();
@@ -23,65 +22,69 @@ const ScanPage = () => {
       alert(`✅ ${decodedText} unlocked!`);
     }
 
-    // Stop scanning after success
     html5QrCodeRef.current?.stop().then(() => {
       setScanning(false);
       navigate('/progress');
     });
   };
 
-const startScanner = () => {
-  setScanning(true);
-
-  setTimeout(() => {
-    const qrRegionId = "qr-reader";
-    html5QrCodeRef.current = new Html5Qrcode(qrRegionId);
-
-    html5QrCodeRef.current
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        handleScanSuccess,
-        (err) => console.warn("QR scan error", err)
-      )
-      .catch((err) => {
-        console.error("Camera start error", err);
-        alert("Camera access failed.");
-        setScanning(false);
-      });
-  }, 300); // wait for DOM to render <div id="qr-reader">
-};
-
+  const startScanner = () => {
+    setScanning(true);
+    setTimeout(() => {
+      const qrRegionId = 'qr-reader';
+      html5QrCodeRef.current = new Html5Qrcode(qrRegionId);
+      html5QrCodeRef.current
+        .start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: 250 },
+          handleScanSuccess,
+          (err) => console.warn('QR scan error', err)
+        )
+        .catch((err) => {
+          console.error('Camera start error', err);
+          alert('Camera access failed.');
+          setScanning(false);
+        });
+    }, 300);
+  };
 
   useEffect(() => {
-    // Cleanup scanner on unmount
     return () => {
       html5QrCodeRef.current?.stop().catch(() => {});
     };
   }, []);
 
   return (
-    <div className="min-h-screen p-6 bg-white flex flex-col justify-between">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Scan QR to Unlock Questions</h2>
+    <div className="min-h-screen bg-white flex flex-col p-4 relative">
+      {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate('/')}
+        className="absolute top-4 left-4 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md shadow-sm"
+      >
+        ← Home
+      </button>
 
-        {!scanning ? (
-          <button onClick={startScanner} className="btn-primary w-full">
+      <h2 className="text-2xl font-bold text-center mb-6 mt-12">Scan to Unlock</h2>
+
+      {!scanning ? (
+        <div className="flex flex-col items-center justify-center flex-grow">
+          <button
+            onClick={startScanner}
+            className="bg-blue-600 text-white px-6 py-4 rounded-xl text-lg shadow-md"
+          >
             📷 Start Scanning
           </button>
-        ) : (
-          <div className="w-full">
-            {scanning && (
-  <div id="qr-reader" className="w-full max-w-sm mx-auto rounded-md overflow-hidden shadow-md border" />
-)}
-            <p className="mt-3 text-sm text-gray-600">Align the QR code within the box.</p>
-          </div>
-        )}
-      </div>
-
-      <button onClick={() => navigate('/progress')} className="btn-secondary mt-6">
-        📊 View Progress
-      </button>
+          <p className="text-sm text-gray-500 mt-4">You'll need camera permission.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center flex-grow">
+          <div
+            id="qr-reader"
+            className="w-full max-w-md aspect-square rounded-lg border shadow-lg"
+          />
+          <p className="text-sm text-gray-600 mt-3">Align the QR code within the box.</p>
+        </div>
+      )}
     </div>
   );
 };

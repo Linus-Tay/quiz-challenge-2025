@@ -10,7 +10,7 @@ const CongratsPage = () => {
       <p className="mb-6 text-lg">You answered all questions correctly!</p>
 
       <button
-        className="bg-yellow-500 text-white px-6 py-3 rounded-lg"
+        className="bg-blue-500 text-white px-6 py-3 rounded-lg"
         onClick={() => navigate('/prize')}
       >
         Redeem Prize
