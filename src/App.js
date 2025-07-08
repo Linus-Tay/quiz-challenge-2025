@@ -7,7 +7,6 @@ import CongratsPage from './pages/CongratsPage';
 import PrizePage from './pages/PrizePage';
 import QRDisplay from './pages/QRDisplay';
 import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -17,7 +16,6 @@ function App() {
         {/* Public Pages */}
         <Route path="/" element={<SignIn />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
         <Route path="/how-to-play" element={<HowToPlay />} />
 
         {/* Protected Pages */}
